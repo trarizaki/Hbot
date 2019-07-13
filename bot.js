@@ -173,4 +173,44 @@ client.on("message", async message => {
 // CODES - COPYRIGHT
 
 
+
+
+client.on('message', message => {
+  if (message.author.bot) return;
+   if (message.content === prefix + "help") {
+    let embed = new Discord.RichEmbed()
+    .setThumbnail(message.author.avatarURL)
+ 
+ 
+ 
+message.author.sendMessage(`
+**
+[❖═════════════════════════════❖]
+        لماذا اتش بوت ؟
+1- :rocket: سرعه اتصال ممتازه
+2- :beginner: سهل الاستخدام
+3- :warning: صيانه يوميه
+4- :money_with_wings: مجاني بالكامل
+5- :shield: يحتوي على مانع اختراق سيرفرات للحفاظ على امان سيرفرك
+6- :musical_note: يحتوي على خاصيه ميوزك بجوده عاليه (صيانة)
+[❖═════════════════════════════❖]
+${prefix}admin => لعرض الاوامر الادارية
+${prefix}general => لعرض الاوامر العامة
+${prefix}ticket => لعرض اوامر التكت
+${prefix}role => لعرض اوامر الرتب
+${prefix}bc => لعرض اوامر البودكاست
+${prefix}premium => لعرض اوامر البريميوم
+[❖═════════════════════════════❖]
+          اخرى
+${prefix}support => لعرض سيرفر المساعدة
+${prefix}inv => لاضافة البوت الى سيرفرك
+.setColor('#FCFCFC')
+     message.channel.sendEmbed(embed);
+      
+**`);
+ 
+}
+});
+
+
 client.login(process.env.BOT_TOKEN);
