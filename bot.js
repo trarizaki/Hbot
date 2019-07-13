@@ -175,11 +175,15 @@ client.on("message", async message => {
 
 
 
+
+
+
 client.on('message', message => {
   if (message.author.bot) return;
-   if (message.content === prefix + "help") {
-    let embed = new Discord.RichEmbed()
-    .setThumbnail(message.author.avatarURL)
+  if(message.content.startsWith(prefix + "help")) {
+    let help = new Discord.RichEmbed()
+        .setColor("RANDOM")
+        .setThumbnail(message.author.avatarURL)
  
  
  
@@ -204,13 +208,14 @@ ${prefix}premium => لعرض اوامر البريميوم
           اخرى
 ${prefix}support => لعرض سيرفر المساعدة
 ${prefix}inv => لاضافة البوت الى سيرفرك
-.setColor('#FCFCFC')
-     message.channel.sendEmbed(embed);
-      
 **`);
- 
+message.channel.sendEmbed(help); // رابط السيرفر يعود الى سيرفر CODES .
 }
 });
+
+
+
+
 
 
 client.login(process.env.BOT_TOKEN);
