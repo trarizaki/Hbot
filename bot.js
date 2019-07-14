@@ -224,9 +224,8 @@ const sRole = require("./Roles.json")
  
         fs.writeFile("./Roles.json", JSON.stringify(sRole, null, 2), (err) => {
           if(err) console.log(err)
-        });
- 
-          })
+                 })
+                      });
 
 
 
