@@ -176,57 +176,24 @@ client.on("message", async message => {
 
 
 
-
-const sRole = require("./Roles.json")
- 
- 
-    client.on('message', message => {
- 
-      if(!message.guild) return
-      if(!sRole[message.guild.id]) sRole[message.guild.id] = {
-          rolesAndMessages: []
-      };
- 
-      var attentions = {};
-      attentions[message.guild.id] = { };
-      const role = sRole[message.guild.id].role
-      if(message.content.startsWith(prefix + "setrole")) {
-        if(!message.member.hasPermission(`MANAGE_GUILD`)) return;
-        let args = message.content.split(/[ ]+/);
-        message.channel.send( message.author + ', ** | قم بوضع اسم الرتبة الان**').then( (m) =>{
-          m.channel.awaitMessages( m1 => m1.author == message.author,{ maxMatches: 1, time: 60*1000 }).then ( (m1) => {
-              m1 = m1.first();
-              attentions[message.guild.id]['role'] = m1.content;
-              if (!message.guild.roles.find("name", m1.content)) return message.channel.send(`**⇏ | ${message.author}, لايوجد رتبة بهذا الاسم**`);;
-          m.channel.send( message.author + ', ** | :writing_hand: قم بوضع الامر الذي تريد من الاعضاء كتابته للحصول على الرتبة **' )
- 
-          m.channel.awaitMessages( m2 => m2.author == message.author,{ maxMatches: 1, time: 60*1000 } ).then ( (m2) => {
-          m2 = m2.first();
-          attentions[message.guild.id]['msg'] = m2.content;
- 
-          message.channel.send(`** | هل تريد اكمال العملية ؟
-  الرتبة : ${attentions[message.guild.id]['role']}
-  الامر : ${attentions[message.guild.id]['msg']}  **`).then(msge => {
-          msge.react('✅').then( r => {
-          msge.react('❌')
- 
-          const oneFilterBB = (reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id;
-          const threeFilterBB = (reaction, user) => reaction.emoji.name === '❌' && user.id === message.author.id;
-          const oneBY = msge.createReactionCollector(oneFilterBB, { time: 60000});
-          const threeBY = msge.createReactionCollector(threeFilterBB, { time: 60000});
-          oneBY.on('collect', r => {
-              msge.delete();
-              message.channel.send(`${message.author}  ** | تمت اضافة الرتبة والامر بنجاح **`)
-             
-          channel = attentions[message.guild.id]['role']
-          msgx = attentions[message.guild.id]['msg'] = m2.content;
-          sRole[message.guild.id].rolesAndMessages.push({msg : msgx, role: channel});
- 
-        fs.writeFile("./Roles.json", JSON.stringify(sRole, null, 2), (err) => {
-          if(err) console.log(err)
-                 })
-                      });
-
+client.on('message', message => {
+    if (message.author.bot) return;
+    if (message.content.startsWith("h!say")) {
+if(!message.member.hasPermission('ADMINISTRATOR')) return      message.channel.send('**You dont have** `ADMINISTRATOR` **permission**');
+var args = message.content.trim().split(/ +/g).slice(1);
+let cname = args[0];
+let chan = message.guild.channels.find(element => element.name === cname);
+if (chan) {
+    let text = args.slice(1).join(" ");
+    message.delete();
+    chan.send(text);
+} else {
+    let text = args.join(" ");
+    message.delete();
+    message.channel.send(text);
+   }
+}
+});
 
 
 
