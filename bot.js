@@ -177,43 +177,56 @@ client.on("message", async message => {
 
 
 
-
-client.on('message', message => {
-  if (message.author.bot) return;
-  if(message.content.startsWith(prefix + "help")) {
-    let help = new Discord.RichEmbed()
-        .setColor("RANDOM")
-        .setThumbnail(message.author.avatarURL)
+const sRole = require("./Roles.json")
  
  
+    client.on('message', message => {
  
-message.author.sendMessage(`
-**
-[❖═════════════════════════════❖]
-        لماذا اتش بوت ؟
-1- :rocket: سرعه اتصال ممتازه
-2- :beginner: سهل الاستخدام
-3- :warning: صيانه يوميه
-4- :money_with_wings: مجاني بالكامل
-5- :shield: يحتوي على مانع اختراق سيرفرات للحفاظ على امان سيرفرك
-6- :musical_note: يحتوي على خاصيه ميوزك بجوده عاليه (صيانة)
-[❖═════════════════════════════❖]
-${prefix}admin => لعرض الاوامر الادارية
-${prefix}general => لعرض الاوامر العامة
-${prefix}ticket => لعرض اوامر التكت
-${prefix}role => لعرض اوامر الرتب
-${prefix}bc => لعرض اوامر البودكاست
-${prefix}premium => لعرض اوامر البريميوم
-[❖═════════════════════════════❖]
-          اخرى
-${prefix}support => لعرض سيرفر المساعدة
-${prefix}inv => لاضافة البوت الى سيرفرك
-**`);
-message.channel.sendEmbed(help); // رابط السيرفر يعود الى سيرفر CODES .
-}
-});
-
-
+      if(!message.guild) return
+      if(!sRole[message.guild.id]) sRole[message.guild.id] = {
+          rolesAndMessages: []
+      };
+ 
+      var attentions = {};
+      attentions[message.guild.id] = { };
+      const role = sRole[message.guild.id].role
+      if(message.content.startsWith(prefix + "setrole")) {
+        if(!message.member.hasPermission(`MANAGE_GUILD`)) return;
+        let args = message.content.split(/[ ]+/);
+        message.channel.send( message.author + ', ** | قم بوضع اسم الرتبة الان**').then( (m) =>{
+          m.channel.awaitMessages( m1 => m1.author == message.author,{ maxMatches: 1, time: 60*1000 }).then ( (m1) => {
+              m1 = m1.first();
+              attentions[message.guild.id]['role'] = m1.content;
+              if (!message.guild.roles.find("name", m1.content)) return message.channel.send(`**⇏ | ${message.author}, لايوجد رتبة بهذا الاسم**`);;
+          m.channel.send( message.author + ', ** | :writing_hand: قم بوضع الامر الذي تريد من الاعضاء كتابته للحصول على الرتبة **' )
+ 
+          m.channel.awaitMessages( m2 => m2.author == message.author,{ maxMatches: 1, time: 60*1000 } ).then ( (m2) => {
+          m2 = m2.first();
+          attentions[message.guild.id]['msg'] = m2.content;
+ 
+          message.channel.send(`** | هل تريد اكمال العملية ؟
+  الرتبة : ${attentions[message.guild.id]['role']}
+  الامر : ${attentions[message.guild.id]['msg']}  **`).then(msge => {
+          msge.react('✅').then( r => {
+          msge.react('❌')
+ 
+          const oneFilterBB = (reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id;
+          const threeFilterBB = (reaction, user) => reaction.emoji.name === '❌' && user.id === message.author.id;
+          const oneBY = msge.createReactionCollector(oneFilterBB, { time: 60000});
+          const threeBY = msge.createReactionCollector(threeFilterBB, { time: 60000});
+          oneBY.on('collect', r => {
+              msge.delete();
+              message.channel.send(`${message.author}  ** | تمت اضافة الرتبة والامر بنجاح **`)
+             
+          channel = attentions[message.guild.id]['role']
+          msgx = attentions[message.guild.id]['msg'] = m2.content;
+          sRole[message.guild.id].rolesAndMessages.push({msg : msgx, role: channel});
+ 
+        fs.writeFile("./Roles.json", JSON.stringify(sRole, null, 2), (err) => {
+          if(err) console.log(err)
+        });
+ 
+          })
 
 
 
