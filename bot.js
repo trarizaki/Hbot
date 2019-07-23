@@ -208,8 +208,6 @@ client.on("message", message => {
 });
 
 
-
-var prefix = "h!";
 client.on('message', message => {
          if (message.content === prefix + "dt") {
          if (!message.channel.guild) return message.reply('** This command only for servers **');  
