@@ -276,4 +276,20 @@ client.on('message', message => {
 
 
 
+var config = require("./config.js");
+client.on("message", async function(message) {
+  if (!message.guild || message.author.bot || !message.content.startsWith(prefix)) return undefined;
+  var command = message.content.slice(prefix.length).split(" ")[0];
+  switch (command) {
+    case "translate":
+      var from = message.content.split(" ")[1],to = message.content.split(" ")[2], text = message.content.split(" ").slice(3).join(" ");
+      if (!text || !from || !to) return message.channel.send(`${message.author}\n\`\`\`fix\nSyntax: ${prefix}translate [from-lang] [to-lang] [text]\nExample: ${prefix}translate ar en فلسطين في القلب.\`\`\``);
+      await message.channel.send(await require("translate")(text, {from: from, to: to, engine: config["trans-engine"], key: config["yandex-api-key"]}));
+      break;
+  }
+});
+
+
+
+
 client.login(process.env.BOT_TOKEN);
