@@ -273,20 +273,31 @@ client.on('message', message => {
 
 
 
-
-var config = require("./config.js");
-client.on("message", async function(message) {
-  if (!message.guild || message.author.bot || !message.content.startsWith(prefix)) return undefined;
-  var command = message.content.slice(prefix.length).split(" ")[0];
-  switch (command) {
-    case "translate":
-      var from = message.content.split(" ")[1],to = message.content.split(" ")[2], text = message.content.split(" ").slice(3).join(" ");
-      if (!text || !from || !to) return message.channel.send(`${message.author}\n\`\`\`fix\nSyntax: ${prefix}translate [from-lang] [to-lang] [text]\nExample: ${prefix}translate ar en فلسطين في القلب.\`\`\``);
-      await message.channel.send(await require("translate")(text, {from: from, to: to, engine: config["trans-engine"], key: config["yandex-api-key"]}));
-      break;
-  }
-});
-
+client.on('message', message => {
+    var api = `${Math.round(client.ping)}`
+    if (message.content.startsWith("h!status")) {
+      message.channel.send({
+ embed: new Discord.RichEmbed() 
+    .setColor('RED')
+    .addField('**RAM 💾**', `${(process.memoryUsage().rss / 1000000).toFixed()}MB`, true)
+         .addField('**PING📡**' , `${Date.now() - message.createdTimestamp}` + ' ms')
+         .addField('**WebSocket:**',api + " ms 📶 ")
+        .addField('**Runtime⌚**', `${Math.round(client.ping)}` + 'ms')
+        .addField('**CPU💿**', `${(process.cpuUsage().rss / 10000).toFixed()}%`, true)
+     })
+    }
+  });
+  function timeCon(time) {
+    let days = Math.floor(time % 31536000 / 86400)
+    let hours = Math.floor(time % 31536000 % 86400 / 3600)
+    let minutes = Math.floor(time % 31536000 % 86400 % 3600 / 60)
+    let seconds = Math.round(time % 31536000 % 86400 % 3600 % 60)
+    days = days > 9 ? days : '0' + days
+    hours = hours > 9 ? hours : '0' + hours
+    minutes = minutes > 9 ? minutes : '0' + minutes
+    seconds = seconds > 9 ? seconds : '0' + seconds
+    return `${days > 0 ? `${days}:` : ''}${(hours || days) > 0 ? `${hours}:` : ''}${minutes}:${seconds}`
+};
 
 
 
